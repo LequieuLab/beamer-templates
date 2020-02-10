@@ -1,0 +1,150 @@
+%!TEX program = xelatex
+\pdfminorversion=4
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{animate}
+%\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{tikz}
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{multimedia}
+\usepackage[customcolors,shade]{hf-tikz}
+
+\newcommand{\highlight}[2]{%
+    \colorbox{#1}{$\displaystyle#2$}
+}
+
+\tikzset{
+  every overlay node/.style={
+    draw=black,fill=white,rounded corners,anchor=north west,
+  },
+}
+% Usage:
+% \tikzoverlay at (-1cm,-5cm) {content};
+% or
+% \tikzoverlay[text width=5cm] at (-1cm,-5cm) {content};
+\def\tikzoverlay{%
+   \tikz[baseline,overlay]\node[every overlay node]
+}%
+
+\mode<presentation>{ 
+%\usetheme{UCSB-MRL2018} 
+\usetheme[nototalslidenumber]{Drexel2019} 
+%\usetheme[nologo]{UCSB-MRL2018} 
+}
+
+\newcommand{\backupbegin}{
+    \newcounter{framenumberappendix}
+    \setcounter{framenumberappendix}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+    \addtocounter{framenumberappendix}{-\value{framenumber}}
+    \addtocounter{framenumber}{\value{framenumberappendix}} 
+}
+
+
+
+\title{An example of the Drexel beamer template}
+\subtitle{Exploring color schemes and graphics}
+
+\author{Joshua Lequieu}
+\date{\today}
+%\institute{Materials Research Laboratory\\University of California, Santa Barbara}
+
+% math
+\newcommand{\rmsub}[2]{\ensuremath{#1_{\rm #2}}}
+\newcommand{\rmsubtiny}[2]{\ensuremath{#1_{\textrm{\tiny #2}}}}
+
+\begin{document}
+
+% ------------------------------------------------
+% Title Page
+% ------------------------------------------------
+
+% make titlepage with UCSB background. Argument is the width of the title textbox
+\makefancytitle{0.8\textwidth}
+
+% make simple titlepage 
+\maketitle
+
+% ------------------------------------
+%     BEGIN
+% ------------------------------------
+\begin{frame}{Variational Enhanced Sampling}
+\begin{itemize}
+\item A free energy surface, $F(\bm{s})$, associated with set of collective variables, $\bm{s}$, is defined as
+\begin{equation}
+    F(\bm{s}) = - (1/\beta) \log \int \mathrm{d}\bm{R} \delta(\bm{s} - \bm{s}(\bm{R}) e^{-\beta U(\bm{R})}
+\end{equation}
+
+\item Valsson and Parrinello introduce a functional of bias potential $V(\bm{s})$,
+\begin{equation}
+    \Omega[V] = \frac{1}{\beta} \log \frac{\int \textrm{d}\bm{s} e^{-\beta[F(\bm{s}) + V(\bm{s})]}} {\int \textrm{d}\bm{s} e^{-\beta F(\bm{s})}} + \int \textrm{d}\bm{s} p(\bm{s}) V(\bm{s})
+\end{equation}
+where $p(\bm{s})$ is an arbitrary probability distribution (normalized).
+\\\textcolor{red}{$\Rightarrow$ $\Omega[V]$ is convex!}
+
+\item The potential which renders $\Omega[V]$ stationary is (to within a constant):
+\begin{equation}
+    V(\bm{s}) = - F(\bm{s}) - (1/\beta) \log p(\bm{s})
+\end{equation}
+
+\end{itemize}
+
+\tiny \hfill Valsson, Parrinello. (2014) PRL 113,090601 
+\end{frame}
+
+\begin{frame}{Variational Enhanced Sampling}
+\begin{enumerate}
+\item Write bias potential $V(\bm{s};\bm{\alpha})$ as function of variational parameters $\bm{\alpha} = (\alpha_1, \alpha_2, ..., \alpha_K)$
+
+\item Minimize $\Omega[V(\bm{\alpha})]$ with respect to $\bm{\alpha}$ using the gradient $\Omega^\prime(\bm{\alpha})$ and Hessian $\Omega^{\prime\prime}(\bm{\alpha})$,
+\begin{equation}
+\frac{\partial \Omega}{\partial \alpha_i} = - \biggl< \frac{\partial V(\bm{s};\bm{\alpha})}{\partial \alpha_i} \biggr>_{V(\bm{\alpha})}
+                                            + \biggl< \frac{\partial V(\bm{s};\bm{\alpha})}{\partial \alpha_i} \biggr>_{p}
+\end{equation}
+
+{\scriptsize
+\begin{align}
+\frac{\partial^2 \Omega(\bm{\alpha})}{\partial \alpha_j \partial \alpha_i} = & \beta \mathrm{Cov} \left[\frac{\partial V(\bm{s};\bm{\alpha})}{\partial \alpha_j}; \frac{\partial V(\bm{s}; \bm{\alpha})}{\partial \alpha_i} \right]_{V(\bm{\alpha})} %\nonumber \\
+               & - \biggl<\frac{\partial^2 V(\bm{s};\bm{\alpha})}{\partial \alpha_j \partial \alpha_i} \biggr>_{V(\bm{\alpha})} 
+                 + \biggl<\frac{\partial^2 V(\bm{s};\bm{\alpha})}{\partial \alpha_j \partial \alpha_i} \biggr>_{p} 
+\end{align}
+}
+where $\langle ... \rangle_{V(\bm{\alpha})}$ and $\langle ... \rangle_{p(\bm{s})}$ are the expectation value obtained in a biased simulation with potential $V(\bm{s};\bm{\alpha})$ and distribution $p(\bm{s})$, respectively
+\item Use stochastic gradient descent-based algoritm to iterate $\bm{\alpha}$
+\\\textcolor{UCSBaqua}{$\Rightarrow$ In practice, only the diagonal of the Hessian is used during optimization}
+
+\end{enumerate}
+
+\tiny \hfill Valsson, Parrinello. (2014) PRL 113,090601 
+\end{frame}
+
+\begin{frame}{Block copolymers are awesome}{They can assemble into so many different morphologies}
+    \begin{block}{Block title}
+    Block content in here
+    \end{block}
+\end{frame}
+
+\begin{frame}{%
+This title is approximately 46 characters. ABC}
+\end{frame}
+\begin{frame}{%
+This title is approximately 47 characters. ABCD}{Note no logo!}
+\end{frame}
+
+
+% ---------------------
+%       APPENDIX
+% ---------------------
+%\appendix 
+%\backupbegin
+%
+%\begin{frame}{Appendix}
+%\end{frame}
+%
+%\backupend
+
+\end{document}
